@@ -24,9 +24,6 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 helm init
 helm init --upgrade
-# Check pods
-sleep 10
-kubectl --namespace kube-system get pods | grep tiller
 #Fix namespace issue with helm and kubernetes
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
@@ -34,5 +31,8 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 #Create Persistent volume called task-pv-volume for Pods to mount
 mkdir -p /tmp/data
 kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-volume.yaml
+sleep 45
+# Check pods
+kubectl --namespace kube-system get pods | grep tiller
 #Sample helm to mount jenkins
 helm install --name my-release --set Persistence.ExistingClaim=task-pv-volume stable/jenkins
