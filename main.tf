@@ -63,9 +63,12 @@ resource "aws_instance" "Kubernetes_Master" {
   ami           = "ami-e2021d81"
   availability_zone = "${lookup(var.availabilityZones, var.region)}"
   key_name = "${var.sshKey}"
-  instance_type = "t2.medium"
+  instance_type = "t2.small"
   security_groups = [ "${aws_security_group.allow_ssh_http.name}" ]
   user_data = "${file("Kubernetes_userdata.sh")}"
+  root_block_device {
+    volume_size = 20
+  }
   /*
   provisioner "remote-exec" {
     inline = [

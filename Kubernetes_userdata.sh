@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install Kubernetes
-apt-get install -y docker.io socat apt-transport-https
+apt-get install -y docker.io socat apt-transport-https htop
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -31,3 +31,8 @@ kubectl --namespace kube-system get pods | grep tiller
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+#Create Persistent volume called task-pv-volume for Pods to mount
+mkdir -p /tmp/data
+kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-volume.yaml
+#Sample helm to mount jenkins
+helm install --name my-release --set Persistence.ExistingClaim=task-pv-volume stable/jenkins
