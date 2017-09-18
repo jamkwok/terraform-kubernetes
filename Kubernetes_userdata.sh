@@ -35,6 +35,10 @@ kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-volu
 kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-claim.yaml
 sleep 45
 # Check pods
+until [ $(kubectl --namespace kube-system get pods | grep tiller | grep -i running | wc -l) -gt "0" ]; do 
+  echo "Waiting for Tiller Pod to come up...."
+  sleep 5
+done
 kubectl --namespace kube-system get pods | grep tiller
 #Sample helm to mount jenkins
-helm install --name my-release --set Persistence.ExistingClaim=task-pv-volume stable/jenkins
+helm install --name my-release --set Persistence.ExistingClaim=task-pv-claim stable/jenkins
