@@ -31,6 +31,8 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 #Create Persistent volume called task-pv-volume for Pods to mount
 mkdir -p /tmp/data
 kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-volume.yaml
+#Create Persistent Volume claim
+kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-claim.yaml
 sleep 45
 # Check pods
 kubectl --namespace kube-system get pods | grep tiller
