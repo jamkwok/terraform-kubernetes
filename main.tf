@@ -27,9 +27,9 @@ variable "availabilityZones" {
   }
 }
 
-resource "aws_security_group" "allow_ssh_http" {
-  name        = "allow_ssh_http"
-  description = "Allow all inbound traffic"
+resource "aws_security_group" "allow_ssh_http_kubes" {
+  name        = "allow_ssh_http_kubes"
+  description = "Allow all inbound traffic for kubernetes"
 
   ingress {
     from_port   = 22
@@ -41,6 +41,13 @@ resource "aws_security_group" "allow_ssh_http" {
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -59,12 +66,12 @@ resource "aws_security_group" "allow_ssh_http" {
 }
 
 resource "aws_instance" "Kubernetes_Master" {
-  depends_on = ["aws_security_group.allow_ssh_http"]
+  depends_on = ["aws_security_group.allow_ssh_http_kubes"]
   ami           = "ami-e2021d81"
   availability_zone = "${lookup(var.availabilityZones, var.region)}"
   key_name = "${var.sshKey}"
   instance_type = "t2.medium"
-  security_groups = [ "${aws_security_group.allow_ssh_http.name}" ]
+  security_groups = [ "${aws_security_group.allow_ssh_http_kubes.name}" ]
   user_data = "${file("Kubernetes_userdata.sh")}"
   root_block_device {
     volume_size = 20

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install Kubernetes
-apt-get install -y docker.io socat apt-transport-https htop
+apt-get install -y docker.io socat apt-transport-https htop git
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -13,6 +13,7 @@ kubeadm init
 sudo cp /etc/kubernetes/admin.conf /root/
 sudo chown $(id -u):$(id -g) /root/admin.conf
 export KUBECONFIG=/root/admin.conf
+echo 'KUBECONFIG="/root/admin.conf"' >> /etc/environment
 #Allows Pod to be run on Master
 kubectl taint nodes --all node-role.kubernetes.io/master-
 #Setup Pod Network using yml file based on version
@@ -35,10 +36,18 @@ kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-volu
 kubectl create -f https://k8s.io/docs/tasks/configure-pod-container/task-pv-claim.yaml
 sleep 45
 # Check pods
-until [ $(kubectl --namespace kube-system get pods | grep tiller | grep -i running | wc -l) -gt "0" ]; do 
+until [ $(kubectl --namespace kube-system get pods | grep tiller | grep -i running | wc -l) -gt "0" ]; do
   echo "Waiting for Tiller Pod to come up...."
   sleep 5
 done
-kubectl --namespace kube-system get pods | grep tiller
-#Sample helm to mount jenkins
-helm install --name my-release --set Persistence.ExistingClaim=task-pv-claim stable/jenkins
+sleep 30
+#Install Nodejs
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+#Sample node
+git clone https://github.com/jamkwok/nodejs-sample.git
+cd nodejs-sample
+docker build -t node-web-app:0.1.0 .
+cd /root
+helm create node-web-app
+helm install  --name node-web-app node-web-app
