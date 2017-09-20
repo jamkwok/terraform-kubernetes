@@ -9,6 +9,9 @@ variable "sshKey" {
 variable "environment" {
   type = "string"
 }
+variable "regionId" {
+  type = "string"
+}
 
 //Mapping
 
