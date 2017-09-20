@@ -1,14 +1,13 @@
-provider "aws" {
-  region = "ap-southeast-2"
-}
+
 //Variables
 variable "region" {
   type = "string"
-  default= "sydney"
 }
 variable "sshKey" {
   type = "string"
-  default = "James.Kwok"
+}
+variable "environment" {
+  type = "string"
 }
 
 //Mapping
@@ -18,6 +17,10 @@ variable "regionId" {
     sydney = "ap-southeast-2"
     oregon = "us-west-2"
   }
+}
+
+provider "aws" {
+  region = "${var.regionId}"
 }
 variable "availabilityZones" {
   type = "map"
