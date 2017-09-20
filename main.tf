@@ -11,27 +11,13 @@ variable "environment" {
 }
 
 //Mapping
-variable "regionId" {
-  type = "map"
-  default = {
-    sydney = "ap-southeast-2"
-    oregon = "us-west-2"
-  }
-}
 
 provider "aws" {
   region = "${var.regionId}"
 }
-variable "availabilityZones" {
-  type = "map"
-  default = {
-    sydney = "ap-southeast-2a"
-    oregon = "us-west-2a"
-  }
-}
 
 resource "aws_security_group" "allow_ssh_http_kubes" {
-  name        = "allow_ssh_http_kubes"
+  name        = "allow_ssh_http_kubes_${var.environment}"
   description = "Allow all inbound traffic for kubernetes"
 
   ingress {
@@ -64,14 +50,14 @@ resource "aws_security_group" "allow_ssh_http_kubes" {
   }
 
   tags {
-    Name = "allow_ssh_http"
+    Name = "allow_ssh_http_${var.environment}"
   }
 }
 
 resource "aws_instance" "Kubernetes_Master" {
   depends_on = ["aws_security_group.allow_ssh_http_kubes"]
   ami           = "ami-e2021d81"
-  availability_zone = "${lookup(var.availabilityZones, var.region)}"
+  availability_zone = "${var.regionId}a"
   key_name = "${var.sshKey}"
   instance_type = "t2.medium"
   security_groups = [ "${aws_security_group.allow_ssh_http_kubes.name}" ]

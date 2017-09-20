@@ -1,4 +1,3 @@
 environment = "jamesK"
 sshKey = "James.Kwok"
-region = "sydney"  
-
+regionId = "ap-southeast-2"  
