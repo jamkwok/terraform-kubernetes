@@ -1,8 +1,5 @@
 
 //Variables
-variable "region" {
-  type = "string"
-}
 variable "sshKey" {
   type = "string"
 }
@@ -85,6 +82,6 @@ resource "aws_instance" "Kubernetes_Master" {
     create_before_destroy = true
   }
   tags {
-    Name = "${var.region}-Kubernetes-Master"
+    Name = "${var.environment}-Kubernetes-Master"
   }
 }
