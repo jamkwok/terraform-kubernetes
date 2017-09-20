@@ -9,6 +9,9 @@ variable "environment" {
 variable "regionId" {
   type = "string"
 }
+variable "myIp" {
+  type = "string"
+}
 
 //Mapping
 
@@ -24,7 +27,7 @@ resource "aws_security_group" "allow_ssh_http_kubes" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.myIp}"]
   }
 
   ingress {
@@ -37,6 +40,13 @@ resource "aws_security_group" "allow_ssh_http_kubes" {
   ingress {
     from_port   = 8080
     to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 30000
+    to_port     = 60000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

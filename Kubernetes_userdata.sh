@@ -50,4 +50,44 @@ cd nodejs-sample
 docker build -t node-web-app:0.1.0 .
 cd /root
 helm create node-web-app
+#Replace Helm templates service yaml
+cat << EOF >> node-web-app/values.yaml
+replicaCount: 1
+image:
+  repository: node-web-app
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+service:
+  name: node-web-app
+  type: NodePort
+  nodePort: 3000
+  externalPort: 80
+  internalPort: 80
+ingress:
+  enabled: false
+  hosts:
+  annotations:
+  tls:
+resources: {}
+EOF
+#Replace Helm templates service Chart
+cat << EOF >> node-web-app/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.externalPort }}
+      nodePort: {{ .Values.service.nodePort }}
+  selector:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
+EOF
 helm install  --name node-web-app node-web-app
