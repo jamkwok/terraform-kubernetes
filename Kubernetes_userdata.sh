@@ -51,7 +51,7 @@ docker build -t node-web-app:0.1.0 .
 cd /root
 helm create node-web-app
 #Replace Helm templates service yaml
-cat << EOF >> node-web-app/values.yaml
+cat << EOF > node-web-app/values.yaml
 replicaCount: 1
 image:
   repository: node-web-app
@@ -60,7 +60,7 @@ image:
 service:
   name: node-web-app
   type: NodePort
-  nodePort: 3000
+  nodePort: 30000
   externalPort: 8080
   internalPort: 8080
 ingress:
@@ -71,7 +71,7 @@ ingress:
 resources: {}
 EOF
 #Replace Helm templates service Chart
-cat << EOF >> node-web-app/templates/service.yaml
+cat << EOF > node-web-app/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
