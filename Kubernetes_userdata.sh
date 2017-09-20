@@ -61,8 +61,8 @@ service:
   name: node-web-app
   type: NodePort
   nodePort: 3000
-  externalPort: 80
-  internalPort: 80
+  externalPort: 8080
+  internalPort: 8080
 ingress:
   enabled: false
   hosts:
