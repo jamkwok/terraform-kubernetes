@@ -8,5 +8,5 @@ A great resource explaining the types in Kubernetes. People will normally use ng
 > http://alesnosek.com/blog/2017/02/14/accessing-kubernetes-pods-from-outside-of-the-cluster/
 
 ### AWS Application Load Balancer
-Used with Kubernetes, each Target Group can point to an ephemeral port, a listener can route to multiple target groups.
+Used with Kubernetes, each Target Group can point to an ephemeral port across multiple instances, a listener can route to multiple target groups.
 > http://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
